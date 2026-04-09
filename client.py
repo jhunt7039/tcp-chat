@@ -73,12 +73,19 @@ class App:
                 data = self.client_socket.recv(1024)
 
                 if not data:
+                    self.data_queue.put("The server has been terminated. Please exit.")
+                    self.running = False
+                    self.client_socket.close()
+                    self.client_socket = None
                     break
 
                 self.data_queue.put(data.decode())
 
-        except Exception as e:
-            self.data_queue.put(f"Error: {e}")
+        except Exception:
+            self.data_queue.put("The server has been terminated. Please exit.")
+            self.running = False
+            if self.client_socket is not None:
+                self.client_socket.close()
 
     def update_gui(self):
         try:
@@ -114,10 +121,13 @@ class App:
 
         try:
             self.client_socket.sendall(message.encode())
-            self.chat_helper(message)
+            self.chat_helper(f"{self.name}: {message}")
             self.message_input.delete("1.0", tk.END)
-        except Exception as e:
-            self.chat_helper(f"Send error: {e}")
+        except Exception:
+            self.data_queue.put("The server has been terminated. Please exit.")
+            self.running = False
+            if self.client_socket is not None:
+                self.client_socket.close()
 
 
 root = tk.Tk()
