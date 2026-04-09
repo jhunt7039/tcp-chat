@@ -53,8 +53,6 @@ class App:
                                      )
         self.send_button.pack(side="right")
 
-        self.master.update_idletasks()
-
         # socket crap
         self.socket_thread = threading.Thread(target=self.read_socket)
         self.socket_thread.daemon = True  # Allow program to exit even if thread is running
@@ -63,12 +61,13 @@ class App:
         self.update_gui()
 
     def read_socket(self):
-        host = 'localhost'  # Or "localhost"
+        host = '35.40.64.248'  # Or "localhost"
         port = 7777         # Replace with your port
 
         try:
             self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.client_socket.connect((host, port))
+            self.client_socket.sendall(self.name.encode())
 
             while self.running:
                 data = self.client_socket.recv(1024)
@@ -109,9 +108,16 @@ class App:
         if not message:
             return
 
-        self.client_socket.sendall(message.encode())
-        self.chat_helper(f"{self.name}: {message}")
-        self.message_input.delete("1.0", tk.END)
+        if self.client_socket is None:
+            self.chat_helper("Not connected to server.")
+            return
+
+        try:
+            self.client_socket.sendall(message.encode())
+            self.chat_helper(message)
+            self.message_input.delete("1.0", tk.END)
+        except Exception as e:
+            self.chat_helper(f"Send error: {e}")
 
 
 root = tk.Tk()
