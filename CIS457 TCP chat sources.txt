@@ -1,0 +1,7 @@
+https://dev.to/rajatrajputdev/tcp-chatroom-in-python-5g66
+
+https://stackoverflow.com/questions/10810249/python-socket-multiple-clients
+
+https://oneuptime.com/blog/post/2026-03-20-python-threading-multiple-clients-ipv4/view
+
+https://docs.python.org/3/library/socketserver.html#asynchronous-mixins
