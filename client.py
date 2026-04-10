@@ -61,7 +61,7 @@ class App:
         self.update_gui()
 
     def read_socket(self):
-        host = '35.40.64.248'  # Or "localhost"
+        host = '127.0.0.1'  # Or "localhost"
         port = 7777         # Replace with your port
 
         try:
